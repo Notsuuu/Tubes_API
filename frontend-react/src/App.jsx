@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
-import { Routes, Route, Navigate } from "react-router-dom";
-
+import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 import LandingPage from "./pages/LandingPage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
@@ -9,20 +8,16 @@ import AdminPage from "./pages/AdminPage";
 
 function App() {
   const [user, setUser] = useState(() => {
-    // Ambil user saat pertama kali render
     const storedUser = localStorage.getItem("user");
     return storedUser ? JSON.parse(storedUser) : null;
   });
 
-  useEffect(() => {
-    const handleStorageChange = () => {
-      const storedUser = localStorage.getItem("user");
-      setUser(storedUser ? JSON.parse(storedUser) : null);
-    };
+  const location = useLocation();
 
-    window.addEventListener("storage", handleStorageChange);
-    return () => window.removeEventListener("storage", handleStorageChange);
-  }, []);
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    setUser(storedUser ? JSON.parse(storedUser) : null);
+  }, [location]);
 
   return (
     <Routes>
@@ -34,11 +29,7 @@ function App() {
         path="/dashboard"
         element={
           user ? (
-            user.role === "user" ? (
-              <Dashboard />
-            ) : (
-              <Navigate to="/admin" />
-            )
+            user.role === "user" ? <Dashboard /> : <Navigate to="/admin" />
           ) : (
             <Navigate to="/login" />
           )
@@ -49,11 +40,7 @@ function App() {
         path="/admin"
         element={
           user ? (
-            user.role === "admin" ? (
-              <AdminPage />
-            ) : (
-              <Navigate to="/dashboard" />
-            )
+            user.role === "admin" ? <AdminPage /> : <Navigate to="/dashboard" />
           ) : (
             <Navigate to="/login" />
           )

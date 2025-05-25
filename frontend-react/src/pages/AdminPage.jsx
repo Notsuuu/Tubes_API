@@ -14,12 +14,9 @@ export default function AdminPage() {
   const [editingId, setEditingId] = useState(null);
   const navigate = useNavigate();
 
-  // Ambil data UMKM saat halaman dimuat
   const fetchUmkm = async () => {
     try {
       const res = await axios.get("/umkm");
-
-      // ✅ Validasi: harus array
       if (Array.isArray(res.data)) {
         setUmkms(res.data);
       } else {
@@ -33,7 +30,12 @@ export default function AdminPage() {
   };
 
   useEffect(() => {
-    fetchUmkm();
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (!user || user.role !== "admin") {
+      navigate("/login");
+    } else {
+      fetchUmkm();
+    }
   }, []);
 
   const handleChange = (e) => {
@@ -89,11 +91,10 @@ export default function AdminPage() {
   };
 
   const handleLogout = () => {
-        localStorage.removeItem("admin");
-        navigate("/login");
-    };
-
-
+    localStorage.removeItem("user");
+    localStorage.removeItem("token");
+    navigate("/login", { replace: true });
+  };
 
   return (
     <div className="p-8 max-w-5xl mx-auto">
