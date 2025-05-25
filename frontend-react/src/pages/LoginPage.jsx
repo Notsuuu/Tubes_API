@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 export default function LoginPage() {
@@ -6,6 +6,14 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
+
+  // 🔁 Redirect otomatis jika sudah login
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (user) {
+      navigate(user.role === "admin" ? "/admin" : "/dashboard");
+    }
+  }, [navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -15,9 +23,9 @@ export default function LoginPage() {
       const res = await fetch("/api/auth/login", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email, password })
+        body: JSON.stringify({ email, password }),
       });
 
       const data = await res.json();
@@ -27,17 +35,12 @@ export default function LoginPage() {
         setError(data.error || "Login gagal");
       } else {
         // Simpan token & user ke localStorage
-        localStorage.setItem("token", data.token); // 🟢 penting untuk axiosInstance
+        localStorage.setItem("token", data.token);
         localStorage.setItem("user", JSON.stringify(data.user));
 
-        // Redirect sesuai role
-        if (data.user.role === "admin") {
-          navigate("/admin");
-        } else {
-          navigate("/dashboard");
-        }
+        // Navigasi sesuai role
+        navigate(data.user.role === "admin" ? "/admin" : "/dashboard");
       }
-
     } catch (err) {
       console.error(err);
       setError("Terjadi kesalahan saat login");
@@ -78,7 +81,10 @@ export default function LoginPage() {
         </form>
 
         <p className="text-center mt-4">
-          Belum punya akun? <a href="/register" className="text-indigo-600 hover:underline">Daftar</a>
+          Belum punya akun?{" "}
+          <a href="/register" className="text-indigo-600 hover:underline">
+            Daftar
+          </a>
         </p>
       </div>
     </div>
