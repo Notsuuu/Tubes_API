@@ -35,7 +35,7 @@ export default function Dashboard() {
 
         <div className="w-full md:w-1/3 h-[400px] md:h-full bg-white text-black p-4 rounded-lg shadow overflow-y-auto">
           <h2 className="text-lg font-bold mb-4">Asisten UMKM</h2>
-          <Chatbot onSelectResults={setUmkmList} />
+          <Chatbot onSelectResults={(newResults) => setUmkmList(newResults)} />
         </div>
       </div>
     </div>
