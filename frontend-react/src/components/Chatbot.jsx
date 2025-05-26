@@ -2,27 +2,28 @@ import { useState } from 'react';
 import axios from 'axios';
 
 export default function ChatbotBox({ onSelectResults }) {
-  const [type, setType] = useState("");
+  const [query, setQuery] = useState("");
   const [responseText, setResponseText] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleSearch = async () => {
-    if (!type.trim()) return;
+    if (!query.trim()) return;
 
     setLoading(true);
     setResponseText("");
 
     try {
-      const res = await axios.get(`/api/chat/search?type=${type}`);
+      const res = await axios.post("/api/chat/ask", { query });
+
       const gptResult = res.data.result;
       const rawData = res.data.raw;
 
-      // Kirim data ke MapView untuk tampilkan marker
+      // Kirim data ke MapView (untuk update marker)
       if (Array.isArray(rawData)) {
         onSelectResults(rawData);
       }
 
-      setResponseText(gptResult || "Data tidak ditemukan.");
+      setResponseText(gptResult || "Tidak ditemukan.");
     } catch (err) {
       console.error(err);
       setResponseText("Terjadi kesalahan atau data tidak ditemukan.");
@@ -38,10 +39,10 @@ export default function ChatbotBox({ onSelectResults }) {
       <div className="flex mb-2">
         <input
           type="text"
-          placeholder="Contoh: makanan, fashion, dll"
+          placeholder="Tanya apa saja: Sin Cafe, kopi, fashion, dll"
           className="flex-1 border p-2 rounded"
-          value={type}
-          onChange={(e) => setType(e.target.value)}
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && handleSearch()}
         />
         <button
