@@ -36,7 +36,7 @@ function MapView({ umkmData = [] }) {
           <Marker key={index} position={[coords[1], coords[0]]}>
             <Popup>
               <strong>{umkm.name}</strong><br />
-              {umkm.location?.description || 'Tidak ada deskripsi'}
+              {umkm.description || 'Tidak ada deskripsi'}
             </Popup>
           </Marker>
         );
