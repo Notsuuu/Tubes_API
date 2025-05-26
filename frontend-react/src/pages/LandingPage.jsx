@@ -18,9 +18,6 @@ export default function LandingPage() {
         <p className="text-lg md:text-xl mb-8 text-white/90 max-w-xl">
           Temukan berbagai usaha mikro kecil menengah di daerah Palu dan Sekitarnya dengan mudah dan cepat!
         </p>
-        <Link to="/dashboard" className="bg-white text-indigo-700 font-semibold px-6 py-3 rounded-full shadow-md hover:bg-black transition duration-700">
-          Jelajahi Sekarang
-        </Link>
       </main>
     </div>
   );
